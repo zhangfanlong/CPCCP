@@ -1,0 +1,127 @@
+% init program
+clc();
+clear();
+addpath (genpath('.'))
+
+% super-parameter
+sigma=1;
+dim=10;
+mu=1;
+lambda=1;
+
+% set result file
+learnerName = 'LR';
+modelName = 'TCA';
+file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
+file=fopen(file_name,'w');
+headerStr = 'model,learner,dim,mu,lambda,dataset,target,source,f1,AUC';
+fprintf(file,'%s\n',headerStr);
+
+%文件路径
+%changingPath = 'D:\学习资料\迁移学习\Arff转mat\changing';
+%creatingPath = 'D:\学习资料\迁移学习\Arff转mat\creating';
+changingPath = './data/changing instance';
+creatingPath = './data/creating instance';
+
+%导入changing文件下所有的mat文件
+dirOutput = dir(fullfile(changingPath,'*.mat'));
+changingNames = {dirOutput.name};
+
+%导入creating文件下所有的mat文件
+dirOutput = dir(fullfile(creatingPath,'*.mat'));
+creatingNames = {dirOutput.name};
+
+%将文件名后缀去掉
+for i = 1:length(changingNames) 
+    temp = strsplit(changingNames{i},'.');
+    changingNames{i} = temp{1};
+end
+%将文件名后缀去掉
+for i = 1:length(creatingNames) 
+    temp = strsplit(creatingNames{i},'.');
+    creatingNames{i} = temp{1};
+end
+
+% Select dataset
+% 选择changing数据集和creating数据集
+for dataset = [1,2]
+    if dataset == 1
+        fileList = changingNames;
+        dataName = 'changing';
+        %循环导入数据          
+        for q = 1:length(fileList)
+            %文件夹路径
+            dirPath = changingPath;
+            %文件名
+            fileName = fileList{q};
+            %合并为文件的完整的绝对路径
+            %注意windowa路径
+            %filePath = [dirPath,'\',fileName,'.mat'];
+            filePath = [dirPath,'/',fileName,'.mat'];
+            %导入文件
+            %注：因为在格式转换时将变量名字进行了简化，以‘-’为切割点进行了切割且仅保留了前面部分
+            %如文件：ArgoUML-resultsFeatureVector
+            %在matlab工作区中的变量名为：ArgoUML
+            load(filePath);
+        end
+        
+        fileList= changingNames;
+        attributeNum= length(changingNames) - 1;
+        labelIndex=length(changingNames);
+    elseif dataset == 2
+        dataName = 'creating';
+        fileList=creatingNames;
+         %循环导入数据
+        for q = 1:length(fileList)
+            dirPath = creatingPath;
+            fileName = fileList{q};
+            filePath = [dirPath,'\',fileName,'.mat']
+            
+            load(filePath);
+        end
+        
+        attributeNum=length(creatingNames) - 1;
+        labelIndex=length(creatingNames);
+    end
+    
+    % Select target project
+    for i = 1:length(fileList)
+        %将文件名标准化，去掉-（包括）后面的字符串，目的是为了对上导入的变量
+        temp = strsplit(fileList{i},'-');
+        
+        targetName = temp{1};
+        
+        targetData=eval(targetName);
+        targetData(targetData(:,labelIndex)==-1,labelIndex)=0;
+        targetX = targetData(:,1:attributeNum);
+        targetX = zscore(targetX);
+        targetY = targetData(:,labelIndex);
+        
+        % Select source project
+        for j = 1:length(fileList)
+            %将文件名标准化，去掉-（包括）后面的字符串，目的是为了对上导入的变量
+            temp = strsplit(fileList{j},'-');
+            sourceName = temp{1};
+            if(i~=j)
+                sourceData=eval(sourceName);
+                sourceData(sourceData(:,labelIndex)==-1,labelIndex)=0;
+                sourceX = sourceData(:,1:attributeNum);
+                sourceX = zscore(sourceX);
+                sourceY = sourceData(:,labelIndex);
+                
+                % call TCA
+                options = tca_options('Kernel', 'linear', 'KernelParam', sigma, 'Mu', mu, 'lambda', lambda, 'Dim', dim);
+                [newtrainX, ~, newtestX] = tca(sourceX, targetX, targetX, options);
+                
+                % Logistic regression
+                model = train([], sourceY, sparse(newtrainX), '-s 0 -c 1');
+                predictY = predict(targetY, sparse(newtestX), model);
+                [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                
+                %parameter string
+                resultStr = [modelName,',',learnerName,',',num2str(dim),',',num2str(mu),',',num2str(lambda),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC)]
+                fprintf(file,'%s\n',resultStr);
+            end
+        end
+    end
+end
