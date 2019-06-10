@@ -4,18 +4,16 @@ clear();
 addpath (genpath('.'))
 
 % super-parameter
-sigma=1;
-dim=10;
-mu=1;
-lambda=1;
+member = 10;
 
 % set result file
 learnerName = 'LR';
-modelName = 'TCA';
+modelName = 'Filter';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
-headerStr = 'model,learner,dim,mu,lambda,dataset,target,source,f1,AUC';
+headerStr = 'model,learner,member,dataset,target,source,f1,AUC';
 fprintf(file,'%s\n',headerStr);
+
 
 %文件路径
 changingPath = 'D:\学习资料\迁移学习\Arff转mat\changing';
@@ -73,12 +71,14 @@ for dataset = [1,2]
             
             load(filePath);
         end
+        
+
     end
     
     % Select target project
     for i = 1:length(fileList)
         %将文件名标准化，去掉-（包括）后面的字符串，目的是为了对上导入的变量
-        temp = strsplit(fileList{i},'-');
+        temp = strsplit(fileList{i},'-'); 
         targetName = temp{1};
         attributeNum = size(eval(targetName),2) - 1;
         labelIndex = size(eval(targetName),2);
@@ -103,17 +103,16 @@ for dataset = [1,2]
                 sourceX = zscore(sourceX);
                 sourceY = sourceData(:,labelIndex);
                 
-                % call TCA
-                options = tca_options('Kernel', 'linear', 'KernelParam', sigma, 'Mu', mu, 'lambda', lambda, 'Dim', dim);
-                [newtrainX, ~, newtestX] = tca(sourceX, targetX, targetX, options);
+                % call NNFilter
+                [trainX, trainY] = NNFilter(member, sourceX, sourceY, targetX);
                 
                 % Logistic regression
-                model = train([], sourceY, sparse(newtrainX), '-s 0 -c 1');
-                predictY = predict(targetY, sparse(newtestX), model);
+                model = train([], trainY, sparse(trainX), '-s 0 -c 1');
+                predictY = predict(targetY, sparse(targetX), model);
                 [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
                 
                 %parameter string
-                resultStr = [modelName,',',learnerName,',',num2str(dim),',',num2str(mu),',',num2str(lambda),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC)]
+                resultStr = [modelName,',',learnerName,',',num2str(member),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC)]
                 fprintf(file,'%s\n',resultStr);
             end
         end
