@@ -2,6 +2,16 @@
 clc();
 clear();
 addpath (genpath('.'))
+addpath([pwd filesep 'matlab2weka']);
+
+if strcmp(filesep, '\')% Windows    
+    javaaddpath('D:\Software\Weka3.6.12\Weka-3-6\weka.jar');
+elseif strcmp(filesep, '/')% Mac OS X
+    javaaddpath('/Applications/weka-3-6-12/weka.jar')
+end
+
+javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka.jar']);
+
 
 % super-parameter
 sigma=1;
@@ -10,7 +20,7 @@ mu=1;
 lambda=1;
 
 % set result file
-learnerName = 'LR';
+learnerName = 'GPR';
 modelName = 'TCA';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
@@ -18,8 +28,12 @@ headerStr = 'model,learner,dim,mu,lambda,dataset,target,source,f1,AUC';
 fprintf(file,'%s\n',headerStr);
 
 %文件路径
-changingPath = 'D:\学习资料\迁移学习\Arff转mat\changing';
-creatingPath = 'D:\学习资料\迁移学习\Arff转mat\creating';
+%%%windows文件路径
+%changingPath = 'D:\学习资料\迁移学习\Arff转mat\changing';
+%creatingPath = 'D:\学习资料\迁移学习\Arff转mat\creating';
+%%%Mac文件路径
+changingPath = './data/changing instance';
+creatingPath = './data/creating instance';
 
 %导入changing文件下所有的mat文件
 dirOutput = dir(fullfile(changingPath,'*.mat'));
@@ -53,7 +67,7 @@ for dataset = [1,2]
             %文件名
             fileName = fileList{q};
             %合并为文件的完整的绝对路径
-            filePath = [dirPath,'\',fileName,'.mat'];
+            filePath = [dirPath,filesep,fileName,'.mat'];
             %导入文件
             %注：因为在格式转换时将变量名字进行了简化，以‘-’为切割点进行了切割且仅保留了前面部分
             %如文件：ArgoUML-resultsFeatureVector
@@ -69,7 +83,7 @@ for dataset = [1,2]
         for q = 1:length(fileList)
             dirPath = creatingPath;
             fileName = fileList{q};
-            filePath = [dirPath,'\',fileName,'.mat']
+            filePath = [dirPath,filesep,fileName,'.mat']
             
             load(filePath);
         end
@@ -108,9 +122,12 @@ for dataset = [1,2]
                 [newtrainX, ~, newtestX] = tca(sourceX, targetX, targetX, options);
                 
                 % Logistic regression
-                model = train([], sourceY, sparse(newtrainX), '-s 0 -c 1');
-                predictY = predict(targetY, sparse(newtestX), model);
-                [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                %model = train([], sourceY, sparse(newtrainX), '-s 0 -c 1');
+                %predictY = predict(targetY, sparse(newtestX), model);
+                %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                
+                %Support vector machine
+                [f_measure,AUC,predictedY] = classifier_example(newtrainX,sourceY,newtestX,targetY);
                 
                 %parameter string
                 resultStr = [modelName,',',learnerName,',',num2str(dim),',',num2str(mu),',',num2str(lambda),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC)]

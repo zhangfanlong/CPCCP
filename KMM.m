@@ -2,12 +2,21 @@
 clc();
 clear();
 addpath (genpath('.'))
+addpath([pwd filesep 'matlab2weka']);
+
+if strcmp(filesep, '\')% Windows    
+    javaaddpath('D:\Software\Weka3.6.12\Weka-3-6\weka.jar');
+elseif strcmp(filesep, '/')% Mac OS X
+    javaaddpath('/Applications/weka-3-6-12/weka.jar')
+end
+
+javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka.jar']);
 
 % super-parameter
 sigma=1;
 
 % set result file
-learnerName = 'LR';
+learnerName = 'GPR';
 modelName = 'KMM';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
@@ -107,9 +116,12 @@ for dataset = [1,2]
                 alpha_weight = normalizeAlpha(alpha_weight, 1);
                 
                 % Logistic regression
-                model = train(alpha_weight, sourceY, sparse(sourceX), '-s 0 -c 1');
-                predictY = predict(targetY, sparse(targetX), model);
-                [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                %model = train(alpha_weight, sourceY, sparse(sourceX), '-s 0 -c 1');
+                %predictY = predict(targetY, sparse(targetX), model);
+                %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                
+                %Support vector machine
+                [f_measure,AUC,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY);
                 
                 %parameter string
                 resultStr = [modelName,',',learnerName,',',num2str(sigma),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC)]

@@ -2,14 +2,22 @@
 clc();
 clear();
 addpath (genpath('.'))
+addpath([pwd filesep 'matlab2weka']);
 
+if strcmp(filesep, '\')% Windows    
+    javaaddpath('D:\Software\Weka3.6.12\Weka-3-6\weka.jar');
+elseif strcmp(filesep, '/')% Mac OS X
+    javaaddpath('/Applications/weka-3-6-12/weka.jar')
+end
+
+javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka.jar']);
 % super-parameter
 sigma=1;
 dim=10;
 lambda=1;
 
 % set result file
-learnerName = 'LR';
+learnerName = 'SVM';
 modelName = 'JDA';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
@@ -24,8 +32,12 @@ process_AUC_file=fopen(process_AUC_file_name,'w');
 
 
 %文件路径
-changingPath = 'D:\学习资料\迁移学习\Arff转mat\changing';
-creatingPath = 'D:\学习资料\迁移学习\Arff转mat\creating';
+%%%windows文件路径
+%changingPath = 'D:\学习资料\迁移学习\Arff转mat\changing';
+%creatingPath = 'D:\学习资料\迁移学习\Arff转mat\creating';
+%%%Mac文件路径
+changingPath = './data/changing instance';
+creatingPath = './data/creating instance';
 
 %导入changing文件下所有的mat文件
 dirOutput = dir(fullfile(changingPath,'*.mat'));
@@ -59,7 +71,7 @@ for dataset = [1,2]
             %文件名
             fileName = fileList{q};
             %合并为文件的完整的绝对路径
-            filePath = [dirPath,'\',fileName,'.mat'];
+            filePath = [dirPath,filesep,fileName,'.mat'];
             %导入文件
             %注：因为在格式转换时将变量名字进行了简化，以‘-’为切割点进行了切割且仅保留了前面部分
             %如文件：ArgoUML-resultsFeatureVector
@@ -76,7 +88,7 @@ for dataset = [1,2]
         for q = 1:length(fileList)
             dirPath = creatingPath;
             fileName = fileList{q};
-            filePath = [dirPath,'\',fileName,'.mat']
+            filePath = [dirPath,filesep,fileName,'.mat']
             
             load(filePath);
         end
@@ -119,26 +131,30 @@ for dataset = [1,2]
                 JDA_options.gamma = sigma          % kernel bandwidth: rbf only
                 
                 % init pseudo-label 
-                LRModel = train([], sourceY, sparse(sourceX), '-s 0 -c 1');
-                LR_Cls = predict(targetY, sparse(targetX), LRModel);
-                [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(LR_Cls, targetY);
-                LRClsArray = [];
-                LRClsArray = [LRClsArray,LR_Cls];
-                fprintf(process_f1_file,'%f,',f_measure);
-                fprintf(process_AUC_file,'%f,',AUC);
+                %LRModel = train([], sourceY, sparse(sourceX), '-s 0 -c 1');
+                %LR_Cls = predict(targetY, sparse(targetX), LRModel);
+                %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(LR_Cls, targetY);
                 
-                for t = 1:10
-                    [newtrainX, newtestX] = JDA(sourceX,targetX,sourceY,LR_Cls,JDA_options);
-                    LRModel = train([], sourceX, sparse(newtrainX), '-s 0 -c 1');
-                    LR_Cls = predict(targetY, sparse(newtestX), LRModel);
+                %Support vector machine
+                [f_measure,AUC,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY);
+                
+                %LRClsArray = [];
+                %LRClsArray = [LRClsArray,LR_Cls];
+                %fprintf(process_f1_file,'%f,',f_measure);
+                %fprintf(process_AUC_file,'%f,',AUC);
+                
+                %for t = 1:10
+                %    [newtrainX, newtestX] = JDA(sourceX,targetX,sourceY,LR_Cls,JDA_options);
+                %    LRModel = train([], sourceX, sparse(newtrainX), '-s 0 -c 1');
+                %    LR_Cls = predict(targetY, sparse(newtestX), LRModel);
                     
-                    [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(LR_Cls, targetY);
-                    fprintf(process_f1_file,'%f,',f_measure);
-                    fprintf(process_AUC_file,'%f,',AUC);
-                end
+                %    [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(LR_Cls, targetY);
+                %    fprintf(process_f1_file,'%f,',f_measure);
+                %    fprintf(process_AUC_file,'%f,',AUC);
+                %end
                 
-                fprintf(process_f1_file,'\n');
-                fprintf(process_AUC_file,'\n');
+                %fprintf(process_f1_file,'\n');
+                %fprintf(process_AUC_file,'\n');
                 
                 resultStr = [learnerName,',',num2str(0),',',num2str(dim),',',num2str(lambda),',',targetName,',',sourceName,',',modelName,',',num2str(f_measure),',',num2str(AUC)]
                 fprintf(file,'%s\n',resultStr);
