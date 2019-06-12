@@ -13,8 +13,8 @@ end
 javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka.jar']);
 
 %设置文件路径
-changingPath = 'D:\学习资料\迁移学习\CPDP-master\data\changing';
-creatingPath = 'D:\学习资料\迁移学习\CPDP-master\data\creating';
+changingPath = 'D:\Code\Git\CPCCP\data\changing instance';
+creatingPath = 'D:\Code\Git\CPCCP\data\creating instance';
 
 %初始化，导入数据集
 [changingNames,creatingNames] = matImport(changingPath,creatingPath);

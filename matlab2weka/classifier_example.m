@@ -1,4 +1,4 @@
-function [f_measure,AUC,predictedY] = classifier_example(newtrainX,sourceY,newtestX,targetY)
+function [f_measure,AUC,precision,recall,predictedY] = classifier_example(newtrainX,sourceY,newtestX,targetY,choice)
 % A example code that runs a classification algorithm on the IRIS dataset.
 % http://www.sunghoonivanlee.com
 % Written by Sunghoon Ivan Lee, All copy rights reserved, 2/20/2015 
@@ -44,7 +44,7 @@ clear uClass_source uClass_target tmp_source temp_target i
 % classifier = 2: Gaussian Process Regression from WEKA
 % classifier = 3: Support Vector Machine from WEKA
 % classifier = 4: Logistic Regression from WEKA
-classifier = 1;
+classifier = choice;
 
 %% Performing K-fold Cross Validation
 %K = 10;
