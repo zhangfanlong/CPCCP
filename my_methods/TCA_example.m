@@ -9,7 +9,7 @@ lambda=1;
 modelName = 'TCA';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
-headerStr = 'model,learner,dim,mu,lambda,dataset,target,source,f1,AUC';
+headerStr = 'model,learner,dataset,target,source,F_average,AUC,P_average,R_average';
 fprintf(file,'%s\n',headerStr);
 
 % Select dataset
@@ -85,10 +85,10 @@ for dataset = [1,2]
                 %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
                 
                 %Support vector machine
-                [f_measure,AUC,predictedY] = classifier_example(newtrainX,sourceY,newtestX,targetY,choice);
+                [f_measure,AUC,precision,recall,predictedY] = classifier_example(newtrainX,sourceY,newtestX,targetY,choice);
                 
                 %parameter string
-                resultStr = [modelName,',',learnerName,',',num2str(dim),',',num2str(mu),',',num2str(lambda),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC)]
+                resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC),',',num2str(precision),',',num2str(recall)]
                 fprintf(file,'%s\n',resultStr);
             end
         end

@@ -5,11 +5,11 @@ dim=10;
 lambda=1;
 
 % set result file
-learnerName = 'SVM';
+
 modelName = 'JDA';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
-headerStr = 'model,learner,dim,lambda,dataset,target,source,f1,AUC';
+headerStr = 'model,learner,dataset,target,source,F_average,AUC,P_average,R_average';
 fprintf(file,'%s\n',headerStr);
 
 % JDA process file
@@ -96,7 +96,7 @@ for dataset = [1,2]
                 %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(LR_Cls, targetY);
                 
                 %Support vector machine
-                [f_measure,AUC,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,choice);
+                [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,choice);
                 
                 %LRClsArray = [];
                 %LRClsArray = [LRClsArray,LR_Cls];
@@ -116,7 +116,7 @@ for dataset = [1,2]
                 %fprintf(process_f1_file,'\n');
                 %fprintf(process_AUC_file,'\n');
                 
-                resultStr = [learnerName,',',num2str(0),',',num2str(dim),',',num2str(lambda),',',targetName,',',sourceName,',',modelName,',',num2str(f_measure),',',num2str(AUC)]
+                resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC),',',num2str(precision),',',num2str(recall)]
                 fprintf(file,'%s\n',resultStr);
             end
             

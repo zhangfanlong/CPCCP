@@ -4,7 +4,7 @@ modelName = 'DG';
 
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
-headerStr = 'model,learner,dataset,target,source,f1,precision,recall';
+headerStr = 'model,learner,dataset,target,source,F_average,AUC,P_average,R_average';
 fprintf(file,'%s\n',headerStr);
 
 % Select dataset

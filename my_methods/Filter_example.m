@@ -7,7 +7,7 @@ member = 10;
 modelName = 'Filter';
 file_name=['./output/',modelName,'_',learnerName,'_result.csv'];
 file=fopen(file_name,'w');
-headerStr = 'model,learner,member,dataset,target,source,f1,AUC';
+headerStr = 'model,learner,dataset,target,source,F_average,AUC,P_average,R_average';
 fprintf(file,'%s\n',headerStr);
 
 % Select dataset
@@ -87,7 +87,7 @@ for dataset = [1,2]
                 [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,choice);
                 
                 %parameter string
-                resultStr = [modelName,',',learnerName,',',num2str(member),',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(precision),',',num2str(recall)]
+                resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC),',',num2str(precision),',',num2str(recall)]
                 fprintf(file,'%s\n',resultStr);
             end
         end
