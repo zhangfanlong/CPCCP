@@ -1,4 +1,4 @@
-function [changingNames,creatingNames]=matImport(changingPath,creatingPath)
+function [changingNames,creatingNames]=ImportData(changingPath,creatingPath)
 
 %导入changing文件下所有的mat文件
 dirOutput = dir(fullfile(changingPath,'*.mat'));
