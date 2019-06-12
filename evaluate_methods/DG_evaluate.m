@@ -1,11 +1,11 @@
 function DG_evaluate(changingPath,creatingPath,changingNames,creatingNames)
 % set result file
 modelName = 'DG';
-
+learnerNames = {'RFC';'GPR';'SVM';'LR'};
 file_name=['./output/',modelName,'_','result.csv'];
 file=fopen(file_name,'w');
 %headerStr = 'model,learner,dataset,target,source,f1,precision,recall';
-headerStr = 'model,learner,dataset,target,source,precision,recall,f1,precision,recall';
+headerStr = 'model,learner,dataset,target,source,P_average,R_average,F_average,AUC';
 fprintf(file,'%s\n',headerStr);
 
 % Select dataset
@@ -74,7 +74,7 @@ fprintf(file,'%s\n',headerStr);
                     sourceX = sourceData(:,1:attributeNum);
                     sourceX = zscore(sourceX);
                     sourceY = sourceData(:,labelIndex);
-
+                    
                     % call DG
                     alpha_weight = cal_data_gravitation(targetX, sourceX);
                     %alpha_weight = NormalizeAlpha(alpha_weight, 1);
@@ -86,16 +86,17 @@ fprintf(file,'%s\n',headerStr);
                     %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
 
                     %设置机器学习方法名字
-                    learnerNames = {'RFC';'GPR';'SVM';'LR'};
 
                     %循环调用迁移学习方法and机器学习方法
+                    disp('machine learning start')
                     for index=1:4
                         %Support vector machine
-                        learnerName = learnerNames(index);
+                        learnerName = learnerNames{index};
                         [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,index);
                         %parameter string
-                        resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC),',',num2str(precision),',',num2str(recall)];
+                        resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
                         fprintf(file,'%s\n',resultStr);
+                        disp([modelName,'_',learnerName,' learning completed！'])
                     end
 
                 end

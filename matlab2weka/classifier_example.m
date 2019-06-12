@@ -25,7 +25,7 @@ featName = {'1', '2', '3', '4','5','6','7','8','9','10'};
 class_source = cell(size(sourceY));
 class_target = cell(size(targetY));
 uClass_source = unique(sourceY);
-uClass_target = unique(targetY)
+uClass_target = unique(targetY);
 tmp_source = cell(1,1);
 for i = 1:length(uClass_source)
     tmp_source{1,1} = strcat('class_', num2str(i-1));
@@ -87,7 +87,7 @@ for i = 1:length(actualClass)
 end
 
 
-[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC, AUC] = evaluate(predictedY, actualY)
+[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC, AUC] = evaluate(predictedY, actualY);
 
 end
 %clear idxCV k

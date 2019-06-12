@@ -3,11 +3,11 @@ function Filter_evaluate(changingPath,creatingPath,changingNames,creatingNames)
     member = 10;
 
     % set result file
-
+    learnerNames = {'RFC';'GPR';'SVM';'LR'};
     modelName = 'Filter';
     file_name=['./output/',modelName,'_result.csv'];
     file=fopen(file_name,'w');
-    headerStr = 'model,learner,member,dataset,target,source,f1,AUC';
+    headerStr = 'model,learner,dataset,target,source,P_average,R_average,F_average,AUC';
     fprintf(file,'%s\n',headerStr);
 
     % Select dataset
@@ -84,15 +84,15 @@ function Filter_evaluate(changingPath,creatingPath,changingNames,creatingNames)
                     %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
 
                      %设置机器学习方法名字
-                    learnerNames = {'RFC';'GPR';'SVM';'LR'};
 
                     %循环调用迁移学习方法and机器学习方法
                     for index=1:4
-                        learnerName = learnerNames(index);
+                        learnerName = learnerNames{index};
                         [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,index);
                         %parameter string
-                        resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(f_measure),',',num2str(AUC),',',num2str(precision),',',num2str(recall)]
+                        resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
                         fprintf(file,'%s\n',resultStr);
+                        disp([modelName,'_',learnerName,' learning completed！'])
                     end           
                 end
             end

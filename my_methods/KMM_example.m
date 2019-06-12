@@ -1,7 +1,4 @@
 function KMM_example(learnerName,choice,changingPath,creatingPath,changingNames,creatingNames)
-
-%importFile(changingPath,creatingPath)
-
 % super-parameter
 sigma=1;
 
