@@ -1,15 +1,15 @@
 function DG_evaluate(changingPath,creatingPath,changingNames,creatingNames)
-% set result file
-modelName = 'DG';
-learnerNames = {'RFC';'GPR';'SVM';'LR'};
-file_name=['./output/',modelName,'_','result.csv'];
-file=fopen(file_name,'w');
-%headerStr = 'model,learner,dataset,target,source,f1,precision,recall';
-headerStr = 'model,learner,dataset,target,source,P_average,R_average,F_average,AUC';
-fprintf(file,'%s\n',headerStr);
+    % set result file
+    modelName = 'DG';
+    learnerNames = {'RFC';'GPR';'SVM';'LR'};
+    file_name=['./output/',modelName,'_','result.csv'];
+    file=fopen(file_name,'w');
+    %headerStr = 'model,learner,dataset,target,source,f1,precision,recall';
+    headerStr = 'model,learner,dataset,target,source,P_average,R_average,F_average,AUC';
+    fprintf(file,'%s\n',headerStr);
 
-% Select dataset
-% 选择changing数据集和creating数据集
+    % Select dataset
+    % 选择changing数据集和creating数据集
     for dataset = [1,2]
         if dataset == 1
             fileList = changingNames;
@@ -28,9 +28,7 @@ fprintf(file,'%s\n',headerStr);
                 %在matlab工作区中的变量名为：ArgoUML
                 load(filePath);
             end
-
             fileList= changingNames;
-
         elseif dataset == 2
             dataName = 'creating';
             fileList=creatingNames;
@@ -42,9 +40,7 @@ fprintf(file,'%s\n',headerStr);
 
                 load(filePath);
             end
-
         end
-
         % Select target project
         for i = 1:length(fileList)
             %将文件名标准化，去掉-（包括）后面的字符串，目的是为了对上导入的变量
@@ -98,7 +94,6 @@ fprintf(file,'%s\n',headerStr);
                         fprintf(file,'%s\n',resultStr);
                         disp([modelName,'_',learnerName,' learning completed！'])
                     end
-
                 end
             end
         end
