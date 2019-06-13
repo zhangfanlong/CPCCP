@@ -13,9 +13,6 @@ end
 javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka.jar']);
 
 %设置文件路径
-%changingPath = 'D:\Code\Git\CPCCP\data\changing instance';
-%creatingPath = 'D:\Code\Git\CPCCP\data\creating instance';
-%%%Mac文件路径
 changingPath = './data/changing instance';
 creatingPath = './data/creating instance';
 
@@ -38,3 +35,5 @@ TCA_evaluate(changingPath,creatingPath,changingNames,creatingNames);
    
 disp("Evaluate JDA methods on different classifiers:")
 JDA_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+
+disp("All Evaluation are done!");
