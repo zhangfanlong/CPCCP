@@ -16,6 +16,7 @@ function [f_measure,AUC,precision,recall,predictedY] = classifier_example(newtra
     
   
     %% converting to nominal variables (Weka cannot classify numerical classes)
+    featName = {'1', '2', '3', '4','5','6','7','8','9','10'};
     class_source = cell(size(sourceY));
     class_target = cell(size(targetY));
     uClass_source = unique(sourceY);
