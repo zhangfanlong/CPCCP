@@ -65,25 +65,29 @@ for dataset = [1,2]
                 alpha_weight = cal_data_gravitation(targetX, sourceX);
                 alpha_weight = normalizeAlpha(alpha_weight, 1);
                 
-                % Logistic regression
+                %% Logistic regression
                 % 邱博士代码
+                learnerName = 'LR';
                 model = train(alpha_weight, sourceY, sparse(sourceX), '-s 0 -c 1');
-                %predictY = predict(targetY, sparse(targetX), model);
-                %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                predictY = predict(targetY, sparse(targetX), model);
+                [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(predictY, targetY);
+                resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
+                fprintf(file,'%s\n',resultStr);
+                disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
                 
                 %设置机器学习方法名字
                 
-                %循环调用迁移学习方法and机器学习方法
-                disp('machine learning start')
-                for index=1:4
+                %% 循环调用迁移学习方法and机器学习方法
+                            % disp('machine learning start')
+                %for index=1:4
                     %Support vector machine
-                    learnerName = learnerNames{index};
-                    [f_measure,AUC,precision,recall,~] = classifier_example(sourceX,sourceY,targetX,targetY,index);
+                    %learnerName = learnerNames{index};
+                    %[f_measure,AUC,precision,recall,~] = classifier_example(sourceX,sourceY,targetX,targetY,index);
                     %parameter string
-                    resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
-                    fprintf(file,'%s\n',resultStr);
-                    disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
-                end
+                    %resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
+                    %fprintf(file,'%s\n',resultStr);
+                    %disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
+                %end
             end
         end
     end

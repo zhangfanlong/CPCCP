@@ -68,23 +68,25 @@ for dataset = [1,2]
                 
                 % call initMethod to generate init Cls
                 [Cls, initMethod] = generateInitCls(initMethodId, sourceX, sourceY, targetX, targetY);
-                [~,~,~,~,~,f_measure,~,~,AUC] = evaluate(Cls, targetY);
+                [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(Cls, targetY);
                 
                 % save the Cls into ClsArray to compare later
                 ClsArray = [Cls];
-                for index=1:4
-                    learnerName = learnerNames{index};
-                    [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,index);
+                %% 循环调用迁移学习方法and机器学习方法
+%                 for index=1:4
+%                     learnerName = learnerNames{index};
+                    learnerName = 'LR';
+%                    [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,index);
+
                     for t = 2:max_iter
-                        [betaW, sourceX, sourceY] = JDM('rbf',sourceX,targetX,sourceY,Cls,sigma);
+                        [betaW, Xs, Ys] = JDM('rbf',sourceX,targetX,sourceY,Cls,sigma);
                         betaW = normalizeAlpha(betaW, 1);
                         
-                        % Logistic regression
-                        %model = train(betaW, Ys, sparse(Xs), '-s 0 -c 1');
-                        %Cls = predict(targetY, sparse(targetX), model);
-                        %[~,~,~,~,~,f_measure,~,~,AUC] = evaluate(Cls, targetY);
-                        
-                        [f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,index);
+                        %Logistic regression
+                        model = train(betaW, Ys, sparse(Xs), '-s 0 -c 1');
+                        Cls = predict(targetY, sparse(targetX), model);
+                        [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(Cls, targetY);
+                        %[f_measure,AUC,precision,recall,predictedY] = classifier_example(sourceX,sourceY,targetX,targetY,index);
                         
                         % Calculate the percentage of number that same prediction as the previous round
                         size_same = size(Cls(Cls==ClsArray(:,t-1)),1);
@@ -102,7 +104,7 @@ for dataset = [1,2]
                     resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
                     fprintf(file,'%s\n',resultStr);
                     disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
-                end
+%                 end
             end
         end
     end

@@ -20,16 +20,16 @@ creatingPath = ['.',filesep,'data',filesep,'creating instance'];
 
 %% 调用不同的迁移学习方法进行评估
 disp("Evaluate JDM methods on different classifiers:")
-%JDM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+JDM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
 disp("Evaluate KMM methods on different classifiers:")
-%KMM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+KMM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
 disp("Evaluate Filter methods on different classifiers:")
-%Filter_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+Filter_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
 disp("Evaluate DG methods on different classifiers:")
-%DG_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+DG_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
 disp("Evaluate TCA methods on different classifiers:")
 TCA_evaluate(changingPath,creatingPath,changingNames,creatingNames);

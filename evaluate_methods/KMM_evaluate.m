@@ -65,26 +65,30 @@ for dataset = [1,2]
                 sourceY = sourceData(:,labelIndex);
                 
                 % call KMM
-               % alpha_weight = KMM('rbf',sourceX, targetX, sigma);
-                %alpha_weight = normalizeAlpha(alpha_weight, 1);
+                alpha_weight = KMM('rbf',sourceX, targetX, sigma);
+                alpha_weight = normalizeAlpha(alpha_weight, 1);
                 
-                % Logistic regression
-                %model = train(alpha_weight, sourceY, sparse(sourceX), '-s 0 -c 1');
-                %predictY = predict(targetY, sparse(targetX), model);
-                %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
+                %% Logistic regression
+                learnerName = LR;
+                model = train(alpha_weight, sourceY, sparse(sourceX), '-s 0 -c 1');
+                predictY = predict(targetY, sparse(targetX), model);
+                [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(predictY, targetY);
+                resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
+                fprintf(file,'%s\n',resultStr);
+                disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
                 
                 %设置机器学习方法名字
                 
                 
-                %循环调用迁移学习方法and机器学习方法
-                for index=1:4
-                    learnerName = learnerNames{index};
-                    [f_measure,AUC,precision,recall,~] = classifier_example(sourceX,sourceY,targetX,targetY,index);
-                    %parameter string
-                    resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
-                    fprintf(file,'%s\n',resultStr);
-                    disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
-                end
+                %% 循环调用迁移学习方法and机器学习方法
+                %for index=1:4
+                %    learnerName = learnerNames{index};
+                %    [f_measure,AUC,precision,recall,~] = classifier_example(sourceX,sourceY,targetX,targetY,index);
+                %    %parameter string
+                %    resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
+                %    fprintf(file,'%s\n',resultStr);
+                %    disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
+                %end
             end
         end
     end

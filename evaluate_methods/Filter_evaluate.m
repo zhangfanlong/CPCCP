@@ -64,24 +64,27 @@ for dataset = [1,2]
                 
                 % call NNFilter
                 [trainX, trainY] = NNFilter(member, sourceX, sourceY, targetX);
-                %有疑问
                 
-                % Logistic regression
-                %model = train([], trainY, sparse(trainX), '-s 0 -c 1');
-                %predictY = predict(targetY, sparse(targetX), model);
-                %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,AUC] = evaluate(predictY, targetY);
                 
+                %% Logistic regression
+                learnerName = LR;
+                model = train([], trainY, sparse(trainX), '-s 0 -c 1');
+                predictY = predict(targetY, sparse(targetX), model);
+                [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(predictY, targetY);
+                resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
+                fprintf(file,'%s\n',resultStr);
+                disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
                 %设置机器学习方法名字
                 
-                %循环调用迁移学习方法and机器学习方法
-                for index=1:4
-                    learnerName = learnerNames{index};
-                    [f_measure,AUC,precision,recall,~] = classifier_example(trainX,trainY,targetX,targetY,index);
-                    %parameter string
-                    resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
-                    fprintf(file,'%s\n',resultStr);
-                    disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
-                end
+               %% 循环调用迁移学习方法and机器学习方法
+                %for index=1:4
+                %    learnerName = learnerNames{index};
+                %    [f_measure,AUC,precision,recall,~] = classifier_example(trainX,trainY,targetX,targetY,index);
+                %    %parameter string
+                %    resultStr = [modelName,',',learnerName,',',dataName,',',targetName,',',sourceName,',',num2str(recall),',',num2str(precision),',',num2str(f_measure),',',num2str(AUC)];
+                %    fprintf(file,'%s\n',resultStr);
+                %    disp([modelName,'_',learnerName,'_',dataName,' learning completed！'])
+                %end
             end
         end
     end
