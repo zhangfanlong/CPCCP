@@ -67,7 +67,7 @@ for dataset = [1,2]
                 
                 
                 %% Logistic regression
-                learnerName = LR;
+                learnerName = 'LR';
                 model = train([], trainY, sparse(trainX), '-s 0 -c 1');
                 predictY = predict(targetY, sparse(targetX), model);
                 [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(predictY, targetY);
