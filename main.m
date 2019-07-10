@@ -19,22 +19,22 @@ creatingPath = ['.',filesep,'data',filesep,'creating instance'];
 [changingNames,creatingNames] = acquireNames(changingPath,creatingPath);
 
 %% 调用不同的迁移学习方法进行评估
-%disp("Evaluate JDM methods on different classifiers:")
-%JDM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+disp("Evaluate JDM methods on different classifiers:")
+JDM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
-disp("Evaluate KMM methods on different classifiers:")
-KMM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+%disp("Evaluate KMM methods on different classifiers:")
+%KMM_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
-disp("Evaluate Filter methods on different classifiers:")
-Filter_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+%disp("Evaluate Filter methods on different classifiers:")
+%Filter_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
-disp("Evaluate DG methods on different classifiers:")
-DG_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+%disp("Evaluate DG methods on different classifiers:")
+%DG_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
-disp("Evaluate TCA methods on different classifiers:")
-TCA_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+%disp("Evaluate TCA methods on different classifiers:")
+%TCA_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
-disp("Evaluate JDA methods on different classifiers:")
-JDA_evaluate(changingPath,creatingPath,changingNames,creatingNames);
+%disp("Evaluate JDA methods on different classifiers:")
+%JDA_evaluate(changingPath,creatingPath,changingNames,creatingNames);
 
 disp("All Evaluation are done!");

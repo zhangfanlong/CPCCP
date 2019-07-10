@@ -89,6 +89,7 @@ if (classifier == 1)
     trainModel.setNumFeatures(0); %Set the number of features to use in random selection.
     trainModel.setNumTrees(100); %Set the value of numTrees.
     trainModel.setSeed(1);
+    
 	%train the classifier
     trainModel.buildClassifier(ft_train_weka);   
     %trainModel.toString()
@@ -132,6 +133,7 @@ elseif(classifier == 4)
 	%defining parameters
     trainModel.setMaxIts(-1); %Set the value of MaxIts.
     trainModel.setRidge(1.0E-8);
+    trainModel.main()
 	%train the classifier
     trainModel.buildClassifier(ft_train_weka);             
 end
