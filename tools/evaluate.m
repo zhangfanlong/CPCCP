@@ -23,6 +23,8 @@ f_measure = 2*((precision*recall)/(precision + recall));
 gmean = sqrt(tp_rate*tn_rate);
 MCC = (tp*tn - fp*fn) /  sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn));
 
+
+
 %º∆À„AUC÷µ
 [A,I]=sort(PREDICTED);
 M=0;

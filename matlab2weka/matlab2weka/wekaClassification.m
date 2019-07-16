@@ -39,7 +39,7 @@ function [actual, predicted, probDistr] = wekaClassification(featTrain, classTra
 import matlab2weka.*;
 
 %% Converting to WEKA data  
-%display('    Converting Data into WEKA format...');
+display('    Converting Data into WEKA format...');
 numExtraClass = 0;
 if (length(unique(classTest)) ~= length(unique(classTrain)))
     % Weka algorithms creates an error (e.g., Random Forest) when 
@@ -75,10 +75,10 @@ clear convert2wekaObj;
 convert2wekaObj = convert2weka('training', featName, featTrain', classTrain, true); 
 ft_train_weka = convert2wekaObj.getInstances();
 clear convert2wekaObj;
-%display('    Converting Completed!');
+display('    Converting Completed!');
 
 %% Training the classification model
-%display('    Classifying...');
+display('    Classifying...');
 if (classifier == 1)
     import weka.classifiers.trees.RandomForest.*;
     import weka.classifiers.meta.Bagging.*;
@@ -89,7 +89,6 @@ if (classifier == 1)
     trainModel.setNumFeatures(0); %Set the number of features to use in random selection.
     trainModel.setNumTrees(100); %Set the value of numTrees.
     trainModel.setSeed(1);
-    
 	%train the classifier
     trainModel.buildClassifier(ft_train_weka);   
     %trainModel.toString()
@@ -133,7 +132,6 @@ elseif(classifier == 4)
 	%defining parameters
     trainModel.setMaxIts(-1); %Set the value of MaxIts.
     trainModel.setRidge(1.0E-8);
-    trainModel.main()
 	%train the classifier
     trainModel.buildClassifier(ft_train_weka);             
 end
@@ -149,4 +147,4 @@ for z = 1:ft_test_weka.numInstances()-numExtraClass
     predicted{z,1} = ft_test_weka.instance(z-1).classAttribute.value(trainModel.classifyInstance(ft_test_weka.instance(z-1))).char();% Modified by GM
     probDistr(z,:) = (trainModel.distributionForInstance(ft_test_weka.instance(z-1)))';
 end 
-%display('    Classification Completed!');
+display('    Classification Completed!');

@@ -9,7 +9,9 @@ function [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC,
     f_measure =average(f_measure_1, label_num_1,f_measure_2, label_num_2);
     gmean = average(gmean_1, label_num_1,gmean_2, label_num_2);
     MCC = average(MCC_1, label_num_1,MCC_2, label_num_2);
-    AUC =average(AUC_1, label_num_1,AUC_2, label_num_2);    
+    AUC =average(AUC_1, label_num_1,AUC_2, label_num_2); 
+
+
 end
 
 function [average_value] = average(value_1,num_1, value_2, num_2)
@@ -28,8 +30,12 @@ label_num = p;
 
 tp = sum(ACTUAL(idx)==PREDICTED(idx));
 tn = sum(ACTUAL(~idx)==PREDICTED(~idx));
+
+
+
 fp = n-tn;
 fn = p-tp; 
+
 
 tp_rate = tp/p;
 tn_rate = tn/p;
@@ -38,6 +44,10 @@ accuracy = (tp+tn)/N;
 sensitivity = tp_rate;
 specificity = tn_rate;
 precision = tp/(tp+fp);
+if(isnan(precision))
+    precision = 0;
+end
+
 recall = sensitivity;
 f_measure = 2*((precision*recall)/(precision + recall));
 gmean = sqrt(tp_rate*tn_rate);

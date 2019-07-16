@@ -1,4 +1,4 @@
-function [E_src, E_tar, E_tar_o] = tca(X_src, X_tar, X_tar_o, options)
+ function [E_src, E_tar, E_tar_o] = tca(X_src, X_tar, X_tar_o, options)
 
 n_tar = size(X_tar,1);
 n_src = size(X_src,1);

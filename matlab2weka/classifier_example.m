@@ -84,7 +84,7 @@ function [f_measure,AUC,precision,recall,predictedY] = classifier_example(newtra
     %%评估类别为1的预测效果
     %[accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC, AUC] = evaluate(predictedY, actualY);
     %评估两个类别的平均预测效果
-    [accuracy,sensitivity,specificity,precision,recall,f_measure,gmean,MCC, AUC] = evaluate_average(predictedY, actualY);
+    [~,~,~,precision,recall,f_measure,~,~, AUC] = evaluate_average(predictedY, actualY);
 
 end
 %clear idxCV k

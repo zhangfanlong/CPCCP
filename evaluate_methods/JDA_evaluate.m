@@ -9,7 +9,7 @@ learnerNames = {'RFC';'GPR';'SVM';'LR'};
 modelName = 'JDA';
 file_name=['./output/',modelName,'_result.csv'];
 file=fopen(file_name,'w');
-headerStr = 'model,learner,dataset,target,source,P_average,R_average,F_average,AUC';
+headerStr = 'model,learner,dataset,target,source,R_average,P_average,F_average,AUC';
 fprintf(file,'%s\n',headerStr);
 
 % JDA process file
