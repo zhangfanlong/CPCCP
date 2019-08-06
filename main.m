@@ -5,6 +5,7 @@ clear();
 addpath (genpath('.'))  
 addpath([pwd filesep 'matlab2weka']);
 
+javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka' filesep 'lib' filesep 'weka.jar'])
 javaaddpath([pwd filesep 'matlab2weka' filesep 'matlab2weka' filesep 'matlab2weka.jar']);
 
 %% 设置文件路径
